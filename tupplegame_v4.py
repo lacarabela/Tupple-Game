@@ -13,36 +13,39 @@ import random #imported so random numbers can be generated
 def die_roll():
     return random.randint(1,6)#random die roll 1-6
 
-def player_choice(playernum, score):#gets player Number and that players current score from the main implementation
+def display_dice(d1, d2, d3): # This is repeated a few times, so I made a function for it
+    print(f"Dice: {d1}, {d2}, {d3}")
+
+def handle_tupple(player_num, current_score): # This is repeated a few times, so I made a function for it
+    print(f"Player {player_num}, you rolled a tupple and score zero points!")
+    return 0
+
+def player_choice(player_num, score):#gets player Number and that players current score from the main implementation
     d1 = die_roll()
     d2 = die_roll()
     d3 = die_roll()
     if d1 == d2 and d2 == d3:
-        print("Player Number "+playernum+", you have terrible luck and have an opening Tupple for zero points!")#in case a player opens with a tupple
-        return 0
+        return handle_tupple(player_num, score)
     while True:
-        choice = input("Player: "+playernum+", (your current score is "+score+") you Rolled a "+str(d1)+","+str(d2)+", and "+str(d3)+"\nWould you like to (T)apout or (R)eroll")
+        choice = input("Player: "+player_num+", (your current score is "+score+") you Rolled a "+str(d1)+","+str(d2)+", and "+str(d3)+"\nWould you like to (T)apout or (R)eroll")
         if choice == "T" or choice == "t":
-            return d1+d2+d3
+            return d1 + d2 + d3
         elif choice == "R" or choice =="r":
             if d1 == d2:#if matching pair won't give the option of dice to roll
                 d3 = die_roll()
-                print("Your Dice are"+str(d1)+","+str(d2)+", and "+str(d3))
+                display_dice(d1, d2, d3)
                 if d1 == d2 and d2 == d3:
-                    print("You got a Tupple, lose all points")
-                    return 0
+                    return handle_tupple(player_num, score)
             elif d1 == d3:#if matching pair won't give the option of dice to roll
                 d2 = die_roll()
-                print("Your Dice are"+str(d1)+","+str(d2)+", and "+str(d3))
+                display_dice(d1, d2, d3)
                 if d1 == d2 and d2 == d3:
-                    print("You got a Tupple, lose all points")
-                    return 0
+                    return handle_tupple(player_num, score)
             elif d2 == d3:#if matching pair won't give the option of dice to roll
                 d1 = die_roll()
-                print("Your Dice are"+str(d1)+","+str(d2)+", and "+str(d3))
+                display_dice(d1, d2, d3)
                 if d1 == d2 and d2 == d3:
-                    print("You got a Tupple, lose all points")#rolling into a tupple
-                    return 0
+                    return handle_tupple(player_num, score)
             else:
                 reroll = input ("Which index values would you like to reroll: (1,2,3) ?")#done this way so it can take almost any version of user input for choices, 123, 1,2,3, 1 2 3, etc.
                 if '1' in reroll:
@@ -51,11 +54,11 @@ def player_choice(playernum, score):#gets player Number and that players current
                     d2 = die_roll()
                 if '3' in reroll:
                     d3 = die_roll()
-                print("You Rolled a "+str(d1)+","+str(d2)+", and "+str(d3)+"")
+                display_dice(d1, d2, d3)
                 if d1 == d2 and d2 == d3:
-                    print("You got a Tupple, lose all points")
-                    return 0
-def ai_choice(scoretobeat):#Ai choice reuses the rule logic and will only try to catch up to the player, gets the players score as a benchmark the computer will use to make its choices, will only reroll
+                    return handle_tupple(player_num, score)
+
+def ai_choice(score_to_beat):#Ai choice reuses the rule logic and will only try to catch up to the player, gets the players score as a benchmark the computer will use to make its choices, will only reroll
     d1 = die_roll()
     d2 = die_roll()
     d3 = die_roll()
@@ -63,8 +66,8 @@ def ai_choice(scoretobeat):#Ai choice reuses the rule logic and will only try to
         print("Computer has terrible luck and opened with a Tupple for zero points")
         return 0
     while True:
-        print("Computer Rolled a "+str(d1)+","+str(d2)+", and "+str(d3)+".\n")
-        if d1+d2+d3 > scoretobeat:
+        display_dice(d1, d2, d3)
+        if d1+d2+d3 > score_to_beat:
             print("Computer has taken the "+str(d1+d2+d3)+" points!")
             return d1+d2+d3
         if d1 == d2:
@@ -94,16 +97,16 @@ choice = input("How many players would you like to play(enter a number), \nor wo
 if choice == "C" or choice == "c":
     print("Picked C")
     winner = False
-    playerscores = [0,0]
+    player_scores = [0,0]
     while winner == False:
-        print("Human Score: "+str(playerscores[0])+" Computer Score: "+str(playerscores[1]))
-        playerscores[0] += player_choice("Human", str(playerscores[0]))
-        if playerscores[0] >= 50:#check if winner, condition is 50 points or more
+        print("Human Score: "+str(player_scores[0])+" Computer Score: "+str(player_scores[1]))
+        player_scores[0] += player_choice("Human", str(player_scores[0]))
+        if player_scores[0] >= 50:#check if winner, condition is 50 points or more
             print("Player wins this round!")
             winner = True
             break
-        playerscores[1] += ai_choice(playerscores[0])
-        if playerscores[1] >= 50:#check if winner, condition is 50 points or more
+        player_scores[1] += ai_choice(player_scores[0])
+        if player_scores[1] >= 50:#check if winner, condition is 50 points or more
             print("Computer wins this round!")
             winner = True
             break
